@@ -48,8 +48,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import nest_asyncio
 nest_asyncio.apply()
 
-OPEN_AI_API_TOKEN = 'sk-proj-weUh6kJVD2yRuNwJp1eHT3BlbkFJj99fgbPAqIiZGL5Kbjmv'
-PROXY = 'http://ECAEZBjg:CJieh2Kj@142.111.193.177:63892'
+OPEN_AI_API_TOKEN = ''
+PROXY = ''
 
 user_agent = "(Standard) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 YaBrowser/24.4.4.1160 Yowser/2.5 Safari/537.36"
 
