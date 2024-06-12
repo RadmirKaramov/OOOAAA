@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Название материала: {{ material.material }}</h1>
+
+  <p><strong>Шифр:</strong> {{ material.cypher }}</p>
+  <p><strong>Проект:</strong> {{ material.project }}</p>
+  <p><strong>Организация:</strong> {{ material.organization }}</p>
+  <p><strong>Тип материала:</strong> {{ material.material_type }}</p>
+  <p><strong>Метод изготовления:</strong> {{ material.manuf_type }}</p>
+  <p><strong>Компонент №1:</strong> {{ material.component1 }}</p>
+  <p><strong>Объемная доля №1:</strong> {{ material.vf1 }}</p>
+{% if material.component2 %}
+  <p><strong>Компонент №2:</strong> {{ material.component2 }}</p>
+  <p><strong>Объемная доля №2:</strong> {{ material.vf2 }}</p>
+{% else %} {% endif %}
+{% if material.component3 %}
+  <p><strong>Компонент №3:</strong> {{ material.component3 }}</p>
+  <p><strong>Объемная доля №3:</strong> {{ material.vf3 }}</p>
+{% else %} {% endif %}
+{% if material.component4 %}
+  <p><strong>Компонент №4:</strong> {{ material.component4 }}</p>
+  <p><strong>Объемная доля №4:</strong> {{ material.vf4 }}</p>
+{% else %} {% endif %}
+  <p><strong>Плотность:</strong> {{ material.density }}</p>
+  <p><strong>Анизотропия:</strong> {{ material.anisotropy }}</p>
+<br>
+<p><a href="{% url 'material_update' material.id %}">Edit </a></p>
+<br>
+<p><a href="{% url 'material_create' %}">Добавить новый материал</a></p>
+<br>
+<a href="{% url 'materials' %}">Back</a>
+{% endblock %}

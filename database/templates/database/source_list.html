@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Источники</h2>
+  {% if source_list %}
+  <ul>
+    {% for source in source_list %}
+      <li>
+        <a href="{{ source.get_absolute_url }}">{{ source.source }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>В базе еще нет источников</p>
+  {% endif %}
+<p><a href="{% url 'source_create' %}">Добавить источник</a></p>
+{% endblock %}

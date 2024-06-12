@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Название типа отчета: {{ reporttype.report_type }}</h2>
+
+  <p><strong>Описание типа отчета:</strong>
+  <p><strong>Промт для данного типа отчета:</strong> </p>
+
+<br>
+<br>
+<p><a href="{% url 'report_type_update' reporttype.id %}">Изменить данные об типе отчета</a></p>
+
+<p><a href="{% url 'report_type_create' %}">Добавить новый тип отчета</a></p>
+
+<a href="{% url 'report_types' %}">К списку всех типов отчетов</a>
+{% endblock %}

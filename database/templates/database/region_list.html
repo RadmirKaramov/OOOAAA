@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Свойства</h2>
+  {% if region_list %}
+  <ul>
+    {% for region in region_list %}
+      <li>
+        <a href="{{ region.get_absolute_url }}">{{ region.region }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>В базе еще нет регионов.</p>
+  {% endif %}
+<p><a href="{% url 'region_create' %}">Добавить регион</a></p>
+{% endblock %}

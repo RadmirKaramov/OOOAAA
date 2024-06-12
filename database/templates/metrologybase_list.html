@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Материалы</h1>
+  {% if material_list %}
+  <ul>
+    {% for material in material_list %}
+      <li>
+        <a href="{{ material.get_absolute_url }}">{{ material.material }}</a> ({{material.organization}})
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>В базе еще нет материалов.</p>
+  {% endif %}
+<p><a href="{% url 'material_create' %}">Добавить материал</a></p>
+{% endblock %}

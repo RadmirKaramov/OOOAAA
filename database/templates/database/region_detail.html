@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Регион №{{ region.id }}</h2>
+
+  <p><strong>Название региона:</strong> {{ region.region }}</p>
+
+   <p><strong>Влияние на промт:</strong> </p>
+
+<br>
+<p><a href="{% url 'region_update' region.id %}">Изменить регион</a></p>
+
+<p><a href="{% url 'region_create' %}">Добавить новый регион</a></p>
+
+<a href="{% url 'regions' %}">Назад ко всем регионам</a>
+{% endblock %}

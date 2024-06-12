@@ -1,0 +1,53 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Отчет {{ report.id }}</h2>
+
+  <p><strong>Название отчета:</strong> {{ report.report_name }}</p>
+  <p><strong>Краткое содержание отчета:</strong> {{ report.short_description }} </p>
+  <p><strong>Тип отчета:</strong> {{ report.report_type }}</p>
+  <p><strong>Источники:</strong>  {% for source in report.sources.all %}
+    {{ source.source }}
+    {% endfor %}</p>
+  <p><strong>Краткое содержание отчета:</strong> {{ report.additional_sources }}</p>
+  <p><strong>География:</strong> {% for region in report.regions.all %}
+    {{ region.region }}
+    {% endfor %}</p>
+  <p><strong>Фильтры:</strong> {{ report.filters }}</p>
+  <p><strong>Данные для графиков:</strong> <a href="{{ report.plot_files.url }}" class="btn btn-primary btn-sm">Файл</a></p>
+  <p><strong>Дополнительные файлы:</strong> <a href="{{ report.files.url }}" class="btn btn-primary btn-sm">Файл</a></p>
+  <p><strong>Необходимые главы:</strong> {{ report.chapters }}</p>
+  <p><strong>Графики:</strong> <a href="{{ report.graphics.url }}" class="btn btn-primary btn-sm">Файл</a></p>
+  <br><br><br>
+  <p><strong>Название сгеренерированной главы 1:</strong> {{ report.chapter_name_1 }}</p>
+  <p><strong>Текст сгеренерированной главы 1:</strong> {{ report.chapter_text_1 }}</p>
+  <p><strong>Название сгеренерированной главы 2:</strong> {{ report.chapter_name_2 }}</p>
+  <p><strong>Текст сгеренерированной главы 2:</strong> {{ report.chapter_text_2 }}</p>
+  <p><strong>Название сгеренерированной главы 3:</strong> {{ report.chapter_name_3 }}</p>
+  <p><strong>Текст сгеренерированной главы 3:</strong> {{ report.chapter_text_3 }}</p>
+  <p><strong>Название сгеренерированной главы 4:</strong> {{ report.chapter_name_4 }}</p>
+  <p><strong>Текст сгеренерированной главы 4:</strong> {{ report.chapter_text_4 }}</p>
+  <p><strong>Название сгеренерированной главы 5:</strong> {{ report.chapter_name_5 }}</p>
+  <p><strong>Текст сгеренерированной главы 5:</strong> {{ report.chapter_text_5 }}</p>
+  <p><strong>Название сгеренерированной главы 6:</strong> {{ report.chapter_name_6 }}</p>
+  <p><strong>Текст сгеренерированной главы 6:</strong> {{ report.chapter_text_6 }}</p>
+<br>
+<br>
+<br>
+<a href="{% url 'gen_chapter' object_id=report.id %}">Сгенерировать главу</a>
+<br>
+<br>
+<br>
+
+<a href="{% url 'export_to_docx' object_id=report.id %}">Сохранить отчет как DOCX файл</a>
+<br>
+<a href="{% url 'export_to_pdf' object_id=report.id %}">Сохранить отчет как PDF файл</a>
+
+<br>
+<br>
+<p><a href="{% url 'report_update' report.id %}">Изменить отчет</a></p>
+
+<p><a href="{% url 'report_create' %}">Добавить новый отчет</a></p>
+
+<a href="{% url 'reports' %}">Назад к списку отчетов</a>
+{% endblock %}

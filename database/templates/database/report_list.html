@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+{% load bootstrap %}
+
+{% block content %}
+  <h2>Отчеты</h2>
+<div class="container">
+  <form method="GET">
+    {{ filter.form }}
+    <button type="submit" class="btn btn-primary">Фильтровать</button>
+  </form>
+</div>
+<hr>
+{% if report_list %}
+  <ul>
+    <table style="width:100%">
+    <tr>
+
+     <th>Название отчета</th>
+     <th>Тип отчета</th>
+
+    </tr>
+    {% for report in object_list %}
+      <tr>
+
+        <td><a href="{{ report.get_absolute_url }}"> {{ report.report_name }}</a></td>
+        <td><a href="{{ report.report_type.get_absolute_url }}">{{ report.report_type }}</a></td>
+
+ 
+      </tr>
+
+    {% endfor %}
+    </table>
+  </ul>
+  
+  {% else %}
+    <p>В базе еще нет отчетов.</p>
+  {% endif %}
+
+<br>
+<a href="{% url 'report_create' %}">Сгенерировать отчет</a>
+{% endblock %}
