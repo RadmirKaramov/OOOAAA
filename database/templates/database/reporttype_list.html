@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Шаблоны отчетов</h2>
+  {% if reporttype_list %}
+  <ul>
+    <table style="width:70%">
+    {% for reporttype in reporttype_list %}
+      <tr>
+        <td><a href="{{ reporttype.get_absolute_url }}"> {{ reporttype.report_type }}</a></td>
+        <td>Описание отчета</td>
+      </tr>
+    {% endfor %}
+    </table>
+  </ul>  {% else %}
+    <p>В базе еще нет ни одного шаблона отчета.</p>
+  {% endif %}
+<p><a href="{% url 'report_type_create' %}">Добавить шаблон отчета</a></p>
+{% endblock %}

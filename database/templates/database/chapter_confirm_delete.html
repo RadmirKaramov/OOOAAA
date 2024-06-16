@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h2>Удаление главы</h2>
+
+<p>Вы уверены, что хотите удалить главу: {{ chapter }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Да, удалить">
+</form>
+
+{% endblock %}

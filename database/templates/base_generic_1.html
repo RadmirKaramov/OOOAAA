@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ form.media.css }}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">    
+
+    <style type="text/css">
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+
+    select {
+      width: 200px;
+    }
+    
+    </style>
+
+  {% block title %}<title>ООО "ААА"</title>{% endblock %}
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-light_blue.min.css">
+    <!-- Add additional CSS in static file -->
+  <link rel="stylesheet" type='text/css' href="{% static 'styles.css' %}">
+    <style>
+
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3">
+      {% block sidebar %}
+        <ul class="sidebar_menu">
+<!--             <div class="logo">
+                <a href="#">ЦК НТИ</a>
+            </div> -->
+            {% if user.is_authenticated %}
+             <br><a href="{% url 'index' %}" class="btn btn-outline-primary">Главная</a>   <a href="{% url 'search' %}" class="btn btn-light">Поиск</a><br><br>
+             <div class="menu">
+                <ul>
+             <li><a href="{% url 'report_types' %}">Шаблоны отчетов</a></li>
+
+             <li><a href="{% url 'sources' %}">Источники</a></li>
+             <li><a href="{% url 'regions' %}">Регионы</a></li>
+             <li><a href="{% url 'reports' %}">Отчеты</a></li>
+             <li><a href="{% url 'chapters' %}">Главы</a></li>
+
+
+
+<br><br>
+<a href="{% url 'report_create' %}">Сгенерировать новый отчет</a> 
+<br>
+
+             <br>
+             Вы зашли как: {{ user.get_username }}
+<!--             <li><a href="{% url 'login'%}?next={{request.path}}">Профиль</a></li>-->
+             <li><a href="{% url 'logout'%}?next={{request.path}}">Выйти</a></li>
+             {% else %}
+             <li><a href="{% url 'login'%}?next={{request.path}}">Войти</a></li>
+           {% endif %}
+            </ul>
+           {% endblock %}
+        </div>
+      </div>
+      <div class="col-sm-8 ">{% block content %}{% endblock %}
+        {% block pagination %}
+            {% if is_paginated %}
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                            {% if 'ordering' in request.get_full_path %}
+                                <a href="{{ request.get_full_path  }}&page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                            {% else %}
+                                <a href="{{ request.path  }}?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                            {% endif %}
+                        {% endif %}
+                        <span class="page-current">
+                            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                        </span>
+                        {% if page_obj.has_next %}
+                            {% if 'ordering' in request.get_full_path %}
+                                <a href="{{ request.get_full_path  }}&page={{ page_obj.next_page_number }}">Следующая</a>
+                            {% else %}
+                                <a href="{{ request.path  }}?page={{ page_obj.next_page_number }}">Следующая</a>
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+            {% endif %}
+          {% endblock %}
+      </div>
+    </div>
+  </div>
+  <script src="{% static '//code.jquery.com/jquery-2.1.4.min.js' %}"></script>
+    <script type="text/javascript">
+      window.onerror = function (msg) {
+        $("body").attr("JSError", msg);
+      }
+    </script>
+{{ form.media.js }}
+</body>
+</html>

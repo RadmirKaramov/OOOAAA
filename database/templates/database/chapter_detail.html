@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+{% load markdownify %}
+
+{% block content %}
+  <h2>Глава {{ chapter.id }}</h2>
+
+  <p><strong>Название отчета:</strong> {{ chapter.report.report_name }}</p>
+  <p><strong>Название главы:</strong> {{ chapter.chapter_name }}</p>
+  <p><strong>Текст главы:</strong> {{ chapter.chapter_text | markdownify }} </p>
+<br><br>
+  <p><strong>Параметры анализа для перегенерации:</strong> {{ chapter.chapter_analysis_parameters }}</p>
+  <p><strong>Пользовательские аннотации для перегенерации:</strong> {{ chapter.chapter_comments }}</p>
+  {% if chapter.graphics %}
+  <p><strong>График:</strong> <a href="{{ chapter.graphics.url }}" class="btn btn-primary btn-sm">Файл</a></p>
+  {% endif %}
+<a href="{% url 'regen_chapter' object_id=chapter.id %}" class="btn btn-primary btn-sm">Перегенерировать главу</a>
+<br><br>
+<p><a href="{% url 'chapter_update' chapter.id %}">Изменить главу</a></p>
+
+<p><a href="{% url 'chapter_create' %}">Добавить новый главу</a></p>
+
+<a href="{% url 'chapters' %}">Назад к списку глав</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Название источника: {{ source.source }}</h2>
+
+  <p><strong>URL источника:</strong> {{ source.URL }} </p>
+
+
+<br>
+<p><a href="{% url 'source_update' source.id %}">Изменить источник</a></p>
+<p><a href="{% url 'source_create' %}">Добавить новый источник</a></p>
+<a href="{% url 'sources' %}">К списку всех источников</a>
+{% endblock %}

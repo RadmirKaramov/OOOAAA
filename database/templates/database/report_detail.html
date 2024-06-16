@@ -1,0 +1,46 @@
+{% extends "base_generic.html" %}
+{% load markdownify %}
+
+{% block content %}
+  <h2>Отчет {{ report.id }}</h2>
+
+  <p><strong>Название отчета:</strong> {{ report.report_name }}</p>
+  <p><strong>Краткое содержание отчета:</strong> {{ report.short_description }} </p>
+  <p><strong>Шаблон отчета:</strong> {{ report.report_type }}</p>
+  <p><strong>Начальная дата:</strong> {{ report.start_date }}</p>
+  <p><strong>Конечная дата:</strong> {{ report.end_date }}</p>
+  <p><strong>Дополнительные источники:</strong> {{ report.additional_sources }}</p>
+  <p><strong>Фильтры:</strong> {{ report.filters }}</p>
+  {% if report.plot_files %}
+  <p><strong>Данные для графиков:</strong> <a href="{{ report.plot_files.url }}" class="btn btn-primary btn-sm">Файл</a></p>
+  {% endif %}
+  {% if report.files %}
+  <p><strong>Дополнительные файлы:</strong> <a href="{{ report.files.url }}" class="btn btn-primary btn-sm">Файл</a></p>  
+  {% endif %}
+  <br><br><br>
+
+    <p><strong>Сгенерированные текст отчета:</strong> {% for chapter in chapter_list %} <p><span class="tab2">
+    <p> {{ chapter.chapter_text | markdownify }} </p>
+    <a href="{{ chapter.get_absolute_url }}" class="btn btn-primary btn-sm"> Редактировать главу "{{ chapter.chapter_name }}"</a>
+    <br><br>
+    </p><br>{% endfor %}
+<br>
+<br>
+<br>
+<a href="{% url 'gen_chapter' object_id=report.id %}" class="btn btn-primary btn-sm">Сгенерировать отчет</a>
+<br>
+<br>
+<br>
+
+<a href="{% url 'export_to_docx' object_id=report.id %}" class="btn btn-primary btn-sm">Сохранить отчет как DOCX файл</a>
+<br><br>
+<a href="{% url 'export_to_pdf' object_id=report.id %}" class="btn btn-primary btn-sm">Сохранить отчет как PDF файл</a>
+
+<br>
+<br>
+<p><a href="{% url 'report_update' report.id %}">Изменить отчет</a></p>
+
+<p><a href="{% url 'report_create' %}">Добавить новый отчет</a></p>
+
+<a href="{% url 'reports' %}">Назад к списку отчетов</a>
+{% endblock %}

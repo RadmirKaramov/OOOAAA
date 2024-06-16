@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h2>Удаление региона</h2>
+
+<p>Вы уверены, что хотите удалить регион: {{ region }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="ДА, delete.">
+</form>
+
+{% endblock %}

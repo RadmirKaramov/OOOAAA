@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h2>Удаление источника</h2>
+
+<p>ВНИМАНИЕ! Вы хотите полностью удалить источник {{ source.source }}! Вы уверены?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Да! Удалить!">
+</form>
+
+{% endblock %}

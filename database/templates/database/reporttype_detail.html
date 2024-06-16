@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Название шаблона отчета: {{ reporttype.report_type }}</h2>
+
+    <p><strong>Краткое описание шаблона:</strong> {{ reporttype.report_type_description }}</p>
+    <p><strong>Источники:</strong>  {% for source in reporttype.sources.all %}
+    {{ source.source }}
+    {% endfor %}</p>
+    <p><strong>География:</strong> {% for region in reporttype.regions.all %}
+    {{ region.region }}
+    {% endfor %}</p>
+    <p><strong>Главы в отчете (перечисление через запятую)</strong> {{ reporttype.chapters }}</p>
+    <p><strong>Основной промпт генерации отчета:</strong> {{ reporttype.chapter_prompt }}</p>
+    <p><strong>Промпт для генерации поисковых запросов:</strong> {{ reporttype.prompt_search }}</p>
+    <p><strong>Промпт для генерации векторных запросов:</strong> {{ reporttype.prompt_vector }}</p>
+
+<br>
+<br>
+<p><a href="{% url 'report_type_update' reporttype.id %}">Изменить данные об шаблоне отчета</a></p>
+
+<p><a href="{% url 'report_type_create' %}">Добавить новый шаблон отчета</a></p>
+
+<a href="{% url 'report_types' %}">К списку всех шаблонов отчетов</a>
+{% endblock %}
