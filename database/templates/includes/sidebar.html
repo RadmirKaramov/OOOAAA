@@ -1,0 +1,62 @@
+{% load static %}
+{% block content %}
+
+<style type="text/css">
+    
+</style>
+<div id="sidebar" class="active">
+    <div class="sidebar-wrapper active">
+        <div class="sidebar-header">
+            <div class="d-flex justify-content-between">
+                <a href="/"><div class="logo">
+                    <!--<img src="{% static 'assets/images/logo/logo.png' %}" alt="Logo" srcset="">-->
+                    <h1 style="text-align:center; color: #000 !important;">AAA</h1>
+                </div></a>
+                <div class="toggler">
+                    <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="menu">
+                <li class="sidebar-title">Menu</li>
+
+                <li class="sidebar-item  {% if request.resolver_match.url_name == 'report_types' %} active sidebar-item-active{% endif %}">
+
+                    <a href="{% url 'report_types' %}" class='sidebar-link'>
+                        <i class="bi bi-code"></i>
+                        <span>Типы репортов</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  {% if request.resolver_match.url_name == 'sources' %} active sidebar-item-active{% endif %}">
+                    <a href="{% url 'sources' %}" class='sidebar-link'>
+                        <i class="bi bi-bullseye"></i>
+                        <span>Источники</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  {% if request.resolver_match.url_name == 'regions' %} active sidebar-item-active{% endif %}">
+                    <a href="{% url 'regions' %}" class='sidebar-link'>
+                        <i class="bi bi-compass"></i>
+                        <span>Регионы</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  {% if request.resolver_match.url_name == 'reports' %} active sidebar-item-active{% endif %}">
+                    <a href="{% url 'reports' %}" class='sidebar-link'>
+                        <i class="bi bi-file-earmark"></i>
+                        <span>Отчеты</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+    </div>
+
+</div>
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    {% endblock content %}
