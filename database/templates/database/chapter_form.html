@@ -10,5 +10,7 @@
     </table>
     <input type="submit" value="Submit">
   </form>
-  <a href="{% url 'chapters' %}">Назад к списку глав</a>
+  {% if chapter.id %}
+  <a href="{% url 'chapter-detail' chapter.id %}">Назад к главе</a>
+  {% endif %}
 {% endblock %}

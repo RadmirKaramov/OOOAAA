@@ -19,11 +19,18 @@
   {% endif %}
   <br><br><br>
 
-    <p><strong>Сгенерированные текст отчета:</strong> {% for chapter in chapter_list %} <p><span class="tab2">
+    <p><strong>Сгенерированные текст отчета:</strong> 
+    {% for chapter in chapter_list %} 
+    <p><span class="tab2">
     <p> {{ chapter.chapter_text | markdownify }} </p>
-    <a href="{{ chapter.get_absolute_url }}" class="btn btn-primary btn-sm"> Редактировать главу "{{ chapter.chapter_name }}"</a>
+    {% if chapter.graphics %}
+    <p> <img src="{{ chapter.graphics.url }}" alt="График по главе" /> </p><br>
+    <p><strong>Рисунок - </strong> {{ chapter.plot_name }} </p>
+    {% endif %}
+    <a href="{{ chapter.get_absolute_url }}" class="btn btn-primary btn-sm">Редактировать главу, добавить/изменить рисунок, составить таблицу</a>
     <br><br>
-    </p><br>{% endfor %}
+    </p><br>
+    {% endfor %}
 <br>
 <br>
 <br>

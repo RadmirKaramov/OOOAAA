@@ -60,6 +60,9 @@ urlpatterns += [
     path('export/pdf/<int:object_id>/', views.export_to_pdf, name='export_to_pdf'),
     path('reports/generate_chapter/<int:object_id>/', views.gen_chapter, name='gen_chapter'),
     path('chapters/regenerate_chapter/<int:object_id>/', views.regen_chapter, name='regen_chapter'),
+    path('chapters/create_table/<int:object_id>/', views.create_table, name='create_table'),
+    path('chapters/create_plot/<int:object_id>/', views.create_plot, name='create_plot'),
+    path('faq/', views.faq, name='faq'),
 ]
 
 if settings.DEBUG:

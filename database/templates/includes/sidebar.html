@@ -4,6 +4,13 @@
 <style type="text/css">
     
 </style>
+<style type="text/css">
+    .menu-bottom {
+        position: absolute; /* Position the menu at the bottom */
+        bottom: 0; /* Align to the bottom */
+        width: 100%; /* Full width */
+    }
+</style>
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper active">
         <div class="sidebar-header">
@@ -46,12 +53,12 @@
                         <span>Отчеты</span>
                     </a>
                 </li>
-                <li class="sidebar-item  {% if request.resolver_match.url_name == 'chapters' %} active sidebar-item-active{% endif %}">
+<!--                 <li class="sidebar-item  {% if request.resolver_match.url_name == 'chapters' %} active sidebar-item-active{% endif %}">
                     <a href="{% url 'chapters' %}" class='sidebar-link'>
                         <i class="bi bi-bookmarks-fill"></i>
                         <span>Главы</span>
                     </a>
-                </li>
+                </li> -->
                 <br><br>   
                 <li class="sidebar-item active sidebar-item-active">
                     <a href="{% url 'report_create' %}" class='sidebar-link'>
@@ -60,6 +67,14 @@
                     </a>
                 </li>
             </ul>
+            <ul class="menu menu-bottom">
+            <li class="sidebar-item">
+                <a href="{% url 'faq' %}" class='sidebar-link'>
+                    <i class="bi bi-question-circle"></i>
+                    <span>FAQ</span>
+                </a>
+            </li>
+        </ul>
         </div>
         <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
     </div>

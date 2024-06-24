@@ -7,7 +7,7 @@ from .uploads import handle_uploaded_tests, handle_uploaded_properties
 from .forms import *
 from itertools import chain
 from django.views.generic import ListView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .filters import ReportsFilter
@@ -16,6 +16,9 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import ast
+from langchain_community.document_loaders import pdf
+import matplotlib.pyplot as plt
+from django.core.files import File
 
 import gc
 from docx import Document
@@ -233,6 +236,11 @@ def gen_chapter(request, object_id):
     # Поиск в инете
     docs = ddg_search(json_prompts, user_agent, sources)
 
+    # Добавление пдфок
+    pdf_path = report.files
+    pdf_doc = pdf.PyPDFLoader(pdf_path).load()
+    docs.append(pdf_doc)
+
     # Проверка дубликатов URL
     docs_wo_duplicates = []
     metadata_list = []
@@ -401,12 +409,14 @@ def regen_chapter(request, object_id):
                                    previous_chapters=previous_chapters,\
                                    chapter_name=chapter_name)
 
-    prompt = prompt + '. Также учитывай следующие комментарии к главе: ' + chapter_comments +\
-            'n\\ Также учитывай следующие параметры анализа в данной главе: ' + chapter_parameters
-    chapter_text = create_completion_openai(client, prompt)
+    full_prompt =  + f'{prompt}.\n\n Выше приведены контекст, тексты остальных глав отчета.\n\n\
+             При создании главы учитывай следующие комментарии к главе: {chapter_comments} \
+             \n\n Также учитывай следующие параметры анализа в данной главе: {chapter_parameters}'
+
+    # chapter_text = create_completion_openai(client, full_prompt)
 
     # Создание главы заново
-    chapter.chapter_text = chapter_text
+    chapter.chapter_text = create_completion_openai(client, full_prompt)
     chapter.save()
     # Очистка БД от данных для предотвращения memory leak
     vectorstore.delete(ids=vectorstore.get()['ids'])
@@ -416,7 +426,95 @@ def regen_chapter(request, object_id):
 
     return HttpResponseRedirect(reverse('chapter-detail', args=(object_id,)))
 
+
+def create_table(request, object_id):
+
+    # Подтягивание данных из БД
+    chapter = Chapter.objects.get(pk=object_id)
+
+    chapter_text = chapter.chapter_text
+    table_comments = chapter.table_comments
+
+
+    prompt = 'Представь текста главы, который представлен выше, в виде таблицы. \
+              Выводи только таблицу без лишнего текста.'
+
+    full_prompt = f'{chapter_text} /n/n/n {prompt} /n Также учитывай следующие комментарии: /n {table_comments}'
+
+    # table_text = create_completion_openai(client, full_prompt)
+
+    # Создание главы заново
+    chapter.table_text = create_completion_openai(client, full_prompt)
+    chapter.save()
+
+    return HttpResponseRedirect(reverse('chapter-detail', args=(object_id,)))
+
+
+def create_plot(request, object_id):
+
+    # Подтягивание данных из БД
+    chapter = Chapter.objects.get(pk=object_id)
+
+    chapter_text = chapter.chapter_text
+    plot_comments = chapter.plot_comments
+
+
+    prompt = 'Предоставь данные, приведенные в главе аналитического отчета (выше) в виде графика.\
+          Подписи в графике должны быть на русском языке. \
+          Выбирай график (или графики), который считаешь наиболее подходящим. DPI обязательно 70. \
+          Выводи только python code с использование plt.show()\
+          Ответ должен быть без лишнего текста, не используй ```, выводи только чистый код.'
+
+    full_prompt = f'{chapter_text} /n/n/n {prompt} /n Также учитывай следующие комментарии: /n {plot_comments}'
+
+    plot_code = create_completion_openai(client, full_prompt)
+
+    # Создание и сохранение изобрежения графика в файл
+    prompt_plot_name = f'{plot_code} /n/n/n Выше представлен код генерации к главе аналитического отчета \
+                         /n Придумай точное, лаконичное название, которое описывает этот график, \
+                         /n учитывая текст главы: /n  {chapter_text}. \
+                         /n/n/nВыведи только название графика, без ничего лишнего, без #.'
+
+    success = False
+    max_attempts = 5
+    attempts = 0
+    
+    while not success and attempts < max_attempts:
+        attempts += 1
+
+        try:
+
+            exec(plot_code)
+            file_path = f'./documents/graphics/buffer{object_id}.png'
+            plt.savefig(file_path)
+
+            with open(file_path, 'rb') as f:
+
+                # Create a Django File instance from the opened file
+                django_file = File(f)
+
+                # Assign the File instance to the file field and save
+                chapter.graphics.save(file_path, django_file, save=True)
+                chapter.save()
+
+                if os.path.exists(file_path):
+                    success = True
+                else:
+                    raise ValueError("Generated code did not produce a graph.")
+
+        except Exception as e:
+            print(f"Attempt {attempts} failed: {e}")
+    plot_name = create_completion_openai(client, prompt_plot_name)
+    chapter.plot_code = plot_code
+    chapter.plot_name = plot_name
+    chapter.save()
+
+    return HttpResponseRedirect(reverse('chapter-detail', args=(object_id,)))
+
 ### AI stuff off
+
+
+### Django stuff on
 
 
 @login_required(login_url='/accounts/login/')
@@ -613,30 +711,29 @@ class SearchView(LoginRequiredMixin, ListView):
 
 def generate_docx_file(object_id):
 
-    # Fetch your data from the database
     report = Report.objects.get(pk=object_id)
 
     chapter_list = Chapter.objects.filter(report = report).order_by('id')
 
-    document = Document()
-    document.add_heading(report.report_name, 0)
-
-    all_chapters = '''\\
-    \\
-    '''
+    all_chapters = f'\n'
+    all_chapters += f'\n# {report.report_name}'
 
     br = '''\\
     \\
     \\'''
 
-    # Create a Word document
+    plot_counter = 0
     for chapter in chapter_list:
-        all_chapters = all_chapters + br + chapter.chapter_text
+        all_chapters += f'\n\n{chapter.chapter_text}\n\n'
+        if chapter.graphics:
+            plot_counter += 1
+            object_id = chapter.id
+            all_chapters += f'\n\n![Рисунок {plot_counter} - {chapter.plot_name}](./documents/graphics/buffer{object_id}.png)\n\n'
+
 
     docx_text = pypandoc.convert_text(all_chapters, 'docx', format='md', outputfile="temp.docx")
     document = Document('temp.docx')
     
-    # Add more item details as needed
     return document
 
 
@@ -683,3 +780,7 @@ def export_to_pdf(request, object_id):
     response = HttpResponse(pdf_content, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="report{report.id}.pdf"'
     return response
+
+
+def faq(request):
+    return render(request, 'faq.html')

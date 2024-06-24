@@ -106,9 +106,11 @@ class Report(models.Model):
 # 5. Главы (блоки) отчетов
 class Chapter(models.Model):
     # Название главы
-    chapter_name = models.CharField(max_length=200, help_text='')
+    chapter_name = models.CharField(max_length=2000, help_text='')
     # Текст главы
     chapter_text = models.TextField()
+    # Таблица по главе
+    table_text = models.TextField(blank=True, null=True)
     # Отчет, к которому принадлежит глава
     report = models.ForeignKey(Report, on_delete=models.SET_NULL, null=True, help_text='')
     # Ответ проверки достоверности
@@ -117,8 +119,16 @@ class Chapter(models.Model):
     chapter_analysis_parameters = models.CharField(max_length=2000, help_text='', blank=True, null=True)
     # Пользовательские аннотации
     chapter_comments = models.CharField(max_length=2000, help_text='', blank=True, null=True)
+    # Комментарий по генерации таблицы
+    table_comments = models.CharField(max_length=2000, help_text='', blank=True, null=True)
+    # Комментарий по генерации графика
+    plot_comments = models.CharField(max_length=2000, help_text='', blank=True, null=True)
     # Графики
     graphics = models.FileField(upload_to='documents/graphics', null=True, blank=True)
+    # Код для генерации графика
+    plot_code = models.CharField(max_length=5000, help_text='', blank=True, null=True)
+    # Название графика
+    plot_name = models.CharField(max_length=1000, help_text='', blank=True, null=True)
 
     def __str__(self):
         return self.chapter_name

@@ -1,23 +1,105 @@
 {% extends "base_generic.html" %}
 {% load markdownify %}
 
+{% block css %}
+
+{% endblock %}
+
+
 {% block content %}
+
+<style>
+  .spoiler-toggle {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    user-select: none;
+    text-align: center; /* Center the text */
+    font-size: 0.9em; /* Make the font smaller */
+  }
+  .spoiler-toggle:hover {
+    background-color: #e8e8e8;
+  }
+  .spoiler-content {
+    display: none;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-top: none;
+    text-align: center; /* Center the text inside the spoiler content */
+  }
+  .spoiler-content p {
+    font-size: 0.8em; /* Make the font smaller for paragraph inside spoiler content */
+  }
+  table {
+    border-collapse: collapse;
+  }
+
+  th, td {
+      border: 1px solid black;
+      padding: 5px;
+  }
+</style>
+
+
   <h2>Глава {{ chapter.id }}</h2>
 
   <p><strong>Название отчета:</strong> {{ chapter.report.report_name }}</p>
   <p><strong>Название главы:</strong> {{ chapter.chapter_name }}</p>
   <p><strong>Текст главы:</strong> {{ chapter.chapter_text | markdownify }} </p>
+
+  
+{% if chapter.table_text %}
 <br><br>
+
+<h2 class="spoiler-toggle" onclick="toggleSpoiler(event)">Таблица по главе</h2>
+<div class="spoiler-content">
+  <p>{{ chapter.table_text | markdownify }}</p>
+</div>
+{% endif %}
+{% if chapter.graphics %}
+<br><br>
+
+<h2 class="spoiler-toggle" onclick="toggleSpoiler(event)">График по главе</h2>
+<div class="spoiler-content">
+  <p> <img src="{{ chapter.graphics.url }}" alt="График по главе" /> </p><br>
+  <p><strong>Рисунок - </strong> {{ chapter.plot_name }} </p>
+  <p><strong></strong> <a href="{{ chapter.graphics.url }}" class="btn btn-primary btn-sm">Скачать как PNG</a></p>
+</div>
+{% endif %}
+<br><br>
+
+
+
   <p><strong>Параметры анализа для перегенерации:</strong> {{ chapter.chapter_analysis_parameters }}</p>
   <p><strong>Пользовательские аннотации для перегенерации:</strong> {{ chapter.chapter_comments }}</p>
-  {% if chapter.graphics %}
-  <p><strong>График:</strong> <a href="{{ chapter.graphics.url }}" class="btn btn-primary btn-sm">Файл</a></p>
-  {% endif %}
+  <p><strong>Комментарий по генерации таблицы:</strong> {{ chapter.table_comments }}</p>
+  <p><strong>Комментарий по генерации графика:</strong> {{ chapter.plot_comments }}</p>
+
 <a href="{% url 'regen_chapter' object_id=chapter.id %}" class="btn btn-primary btn-sm">Перегенерировать главу</a>
+<br><br>
+<a href="{% url 'create_table' object_id=chapter.id %}" class="btn btn-primary btn-sm">Создать таблицу по главе</a>
+<br><br>
+<a href="{% url 'create_plot' object_id=chapter.id %}" class="btn btn-primary btn-sm">Создать график по главе</a>
 <br><br>
 <p><a href="{% url 'chapter_update' chapter.id %}">Изменить главу</a></p>
 
-<p><a href="{% url 'chapter_create' %}">Добавить новый главу</a></p>
+<!-- <p><a href="{% url 'chapter_create' %}">Добавить новый главу</a></p> -->
 
-<a href="{% url 'chapters' %}">Назад к списку глав</a>
+<a href="{% url 'report-detail' chapter.report.id %}">Назад к отчету</a>
+
+<script>
+function toggleSpoiler(event) {
+  var spoilerContent = event.target.nextElementSibling;
+  if (spoilerContent.style.display === 'none' || spoilerContent.style.display === '') {
+    spoilerContent.style.display = 'block';
+    event.target.style.borderBottom = 'none';
+  } else {
+    spoilerContent.style.display = 'none';
+    event.target.style.borderBottom = '1px solid #ddd';
+  }
+}
+</script>
 {% endblock %}
+
